@@ -29,12 +29,8 @@
 *{box-sizing:border-box}
 html,body{margin:0}
 body{
-  background:var(--page);
-  color:var(--ink);
-  font-family:var(--sans);
-  font-size:15px;
-  line-height:1.6;
-  -webkit-font-smoothing:antialiased;
+  background:var(--page);color:var(--ink);font-family:var(--sans);
+  font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;
 }
 .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
 
@@ -43,7 +39,7 @@ body{
 .masthead .wrap{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;padding-top:16px;padding-bottom:16px}
 .wordmark{font-family:var(--serif);font-weight:800;font-size:21px;letter-spacing:-.01em}
 .wordmark .bar{display:inline-block;width:22px;height:3px;background:var(--navy);vertical-align:middle;margin-right:9px;position:relative;top:-3px}
-.source{font-size:12px;color:var(--muted);margin-left:auto;letter-spacing:.01em}
+.source{font-size:12px;color:var(--muted);margin-left:auto}
 
 /* ---------- search ---------- */
 .search{background:var(--paper);border-bottom:1px solid var(--rule)}
@@ -52,28 +48,29 @@ body{
 .lede{font-family:var(--serif);font-size:clamp(24px,3.4vw,34px);line-height:1.35;margin:0 0 22px;max-width:26ch;font-weight:700}
 .lede em{font-style:normal;background:linear-gradient(180deg,transparent 58%,var(--mark) 58%,var(--mark) 94%,transparent 94%);padding:0 .08em}
 
-.searchbar{display:flex;gap:0;max-width:640px;border:2px solid var(--ink);background:var(--paper)}
-.searchbar input{
-  flex:1;min-width:0;border:0;outline:0;padding:14px 16px;
-  font-family:var(--sans);font-size:16px;color:var(--ink);background:transparent;
-}
+.searchbar{display:flex;max-width:640px;border:2px solid var(--ink);background:var(--paper)}
+.searchbar input{flex:1;min-width:0;border:0;outline:0;padding:14px 16px;font-family:var(--sans);font-size:16px;color:var(--ink);background:transparent}
 .searchbar input::placeholder{color:#A6B0B9}
-.searchbar button{
-  border:0;background:var(--ink);color:#fff;padding:0 26px;
-  font-family:var(--sans);font-size:15px;font-weight:600;cursor:pointer;white-space:nowrap;
-}
+.searchbar button{border:0;background:var(--ink);color:#fff;padding:0 26px;font-family:var(--sans);font-size:15px;font-weight:600;cursor:pointer;white-space:nowrap}
 .searchbar button:hover{background:var(--navy)}
 .searchbar:focus-within{box-shadow:0 0 0 3px var(--mark-soft)}
-.hint{font-size:13px;color:var(--muted);margin:10px 0 0}
+
+.modebar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px}
+.seg{display:inline-flex;border:1px solid var(--rule);background:var(--paper)}
+.seg label{position:relative;cursor:pointer}
+.seg input{position:absolute;opacity:0;width:0;height:0}
+.seg span{display:block;padding:7px 15px;font-size:13.5px;color:var(--ink-2);white-space:nowrap}
+.seg label+label span{border-left:1px solid var(--rule)}
+.seg input:checked+span{background:var(--ink);color:#fff;font-weight:600}
+.seg input:focus-visible+span{outline:2px solid var(--navy);outline-offset:-2px}
+.modehint{font-size:13px;color:var(--muted)}
 
 /* ---------- layout ---------- */
 .layout{display:grid;grid-template-columns:236px 1fr;gap:34px;align-items:start;padding-top:28px;padding-bottom:80px}
 @media (max-width:820px){.layout{grid-template-columns:1fr;gap:18px}}
-
 .panel{position:sticky;top:20px}
 @media (max-width:820px){.panel{position:static}}
-.panel h2{font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--muted);margin:0 0 10px;text-transform:none}
-.panel section+section{margin-top:26px}
+.panel h2{font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--muted);margin:0 0 10px}
 .group{margin-bottom:14px}
 .group>span{display:block;font-size:11px;color:var(--muted);font-weight:600;margin-bottom:6px;padding-left:2px}
 .opt{display:flex;align-items:center;gap:8px;padding:5px 6px;border-radius:4px;cursor:pointer;font-size:13.5px;color:var(--ink-2)}
@@ -95,48 +92,38 @@ body{
 .empty .big{font-family:var(--serif);font-size:18px;color:var(--ink-2)}
 
 .card{background:var(--paper);border:1px solid var(--rule);box-shadow:var(--shadow);margin-bottom:12px}
-.card .hdr{display:block;width:100%;text-align:left;border:0;background:none;font:inherit;color:inherit;
-  padding:16px 20px 14px;cursor:pointer}
+.card .hdr{padding:16px 20px 15px;cursor:pointer}
 .card .hdr:hover{background:#FCFCFD}
 .card .hdr:focus-visible{outline:2px solid var(--navy);outline-offset:-2px}
 .meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
-.badge{font-size:11px;font-weight:600;letter-spacing:.02em;padding:2px 8px;border:1px solid var(--navy);color:var(--navy);background:var(--navy-soft)}
+.badge{font-size:11px;font-weight:600;padding:2px 8px;border:1px solid var(--navy);color:var(--navy);background:var(--navy-soft)}
+.badge.hits{border-color:#B8860B;color:#7A5B00;background:#FFF7DA}
 .meta .mono{font-family:var(--mono);font-size:12px;color:var(--muted)}
 .meta .dot{color:var(--rule)}
 .card h3{font-family:var(--serif);font-size:17.5px;font-weight:700;line-height:1.45;margin:0;color:var(--ink)}
-.chev{float:right;color:var(--muted);font-size:12px;margin-left:12px;font-family:var(--sans)}
+.chev{float:right;color:var(--muted);font-size:12px;margin-left:12px}
+
+.snippet{
+  display:block;font-family:var(--serif);font-size:14.5px;line-height:1.85;
+  color:var(--ink-2);margin-top:9px;word-break:keep-all;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+}
+.snippet.pending{color:#AEB7BF;font-family:var(--sans);font-size:13px}
 
 .body{border-top:1px solid var(--rule);padding:4px 20px 22px;display:none}
 .card.open .body{display:block}
 .field{margin-top:18px}
-.field>h4{
-  font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--navy);
-  margin:0 0 8px;padding-bottom:5px;border-bottom:1px solid var(--rule);
-}
+.field>h4{font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--navy);margin:0 0 8px;padding-bottom:5px;border-bottom:1px solid var(--rule)}
 .field p{font-family:var(--serif);font-size:15px;line-height:1.95;color:var(--ink);margin:0 0 .9em;white-space:pre-wrap;word-break:keep-all}
 .field p:last-child{margin-bottom:0}
-.field.gist{background:var(--navy-soft);border-left:3px solid var(--navy);padding:14px 16px}
-.field.gist>h4{border-bottom:0;padding-bottom:0;margin-bottom:6px}
-.field.gist p{font-size:14.5px;line-height:1.85}
 .origin{margin-top:20px;padding-top:14px;border-top:1px solid var(--rule);font-size:13px}
 .origin a{color:var(--navy);text-underline-offset:3px}
 .loading,.err{font-size:13.5px;color:var(--muted);padding:16px 0}
 .err{color:#9B3116}
 
-/* ---------- 강조 (signature) ---------- */
-mark.hl{background:none;color:inherit;padding:0}
-[data-mark="pen"] mark.hl{
-  background:linear-gradient(180deg,transparent 14%,var(--mark-soft) 14%,var(--mark-soft) 92%,transparent 92%);
-  padding:0 .12em;
-  -webkit-box-decoration-break:clone;box-decoration-break:clone;
-}
-[data-mark="line"] mark.hl{
-  font-weight:700;
-  background:linear-gradient(90deg,var(--navy),var(--navy)) 0 100%/100% 2px no-repeat;
-  padding-bottom:2px;
-}
-[data-mark="both"] mark.hl{
-  font-weight:700;
+/* ---------- 강조: 형광펜 + 밑줄 ---------- */
+mark.hl{
+  color:inherit;font-weight:700;
   background:
     linear-gradient(90deg,var(--navy),var(--navy)) 0 100%/100% 2px no-repeat,
     linear-gradient(180deg,transparent 14%,var(--mark-soft) 14%,var(--mark-soft) 92%,transparent 92%);
@@ -153,7 +140,7 @@ mark.hl{background:none;color:inherit;padding:0}
 .foot p{margin:0 0 4px}
 </style>
 </head>
-<body data-mark="pen">
+<body>
 
 <header class="masthead">
   <div class="wrap">
@@ -167,31 +154,28 @@ mark.hl{background:none;color:inherit;padding:0}
     <p class="eyebrow">키워드 한 번으로</p>
     <h1 class="lede">판례, 유권해석, 위원회 결정을 <em>한자리에서</em></h1>
     <div class="searchbar">
-      <input id="q" type="search" placeholder="예) 부당해고, 하도급대금, 취업규칙 불이익변경" autocomplete="off" enterkeyhint="search">
+      <input id="q" type="search" placeholder="예) 취업규칙 불이익변경" autocomplete="off" enterkeyhint="search">
       <button id="go" type="button">검색</button>
     </div>
-    <p class="hint">제목과 본문을 함께 찾습니다. 왼쪽에서 검색 대상을 늘리거나 줄일 수 있습니다.</p>
+    <div class="modebar">
+      <div class="seg">
+        <label><input type="radio" name="mode" value="and" checked><span>모두 포함</span></label>
+        <label><input type="radio" name="mode" value="or"><span>하나라도 포함</span></label>
+      </div>
+      <span class="modehint">단어를 띄어쓰기로 나눠 입력하면 적용됩니다.</span>
+    </div>
   </div>
 </section>
 
 <div class="wrap layout">
 
   <aside class="panel">
-    <section>
-      <h2>검색 대상</h2>
-      <div id="scopes"></div>
-      <div class="panel-actions">
-        <button class="linkbtn" data-all="1" type="button">전체 선택</button>
-        <button class="linkbtn" data-all="0" type="button">전체 해제</button>
-      </div>
-    </section>
-    <section>
-      <h2>강조 표시</h2>
-      <label class="opt"><input type="radio" name="mk" value="pen" checked>형광펜</label>
-      <label class="opt"><input type="radio" name="mk" value="line">밑줄</label>
-      <label class="opt"><input type="radio" name="mk" value="both">형광펜 + 밑줄</label>
-      <label class="opt"><input type="radio" name="mk" value="off">표시 안 함</label>
-    </section>
+    <h2>검색 대상</h2>
+    <div id="scopes"></div>
+    <div class="panel-actions">
+      <button class="linkbtn" data-all="1" type="button">전체 선택</button>
+      <button class="linkbtn" data-all="0" type="button">전체 해제</button>
+    </div>
   </aside>
 
   <main>
@@ -214,68 +198,61 @@ mark.hl{background:none;color:inherit;padding:0}
 </footer>
 
 <script>
-/* ------------------------------------------------------------------
-   검색 대상 정의
------------------------------------------------------------------- */
+/* ==================================================================
+   검색 대상
+================================================================== */
 const SCOPES = [
-  { g:'판례 · 해석',    t:'prec',   n:'판례',            on:true  },
-  { g:'판례 · 해석',    t:'expc',   n:'법령해석례',      on:true  },
-  { g:'판례 · 해석',    t:'decc',   n:'행정심판례',      on:false },
-  { g:'판례 · 해석',    t:'detc',   n:'헌재결정례',      on:false },
-  { g:'위원회 결정문',  t:'nlrc',   n:'노동위원회',      on:true  },
-  { g:'위원회 결정문',  t:'ftc',    n:'공정거래위원회',  on:true  },
-  { g:'위원회 결정문',  t:'eiac',   n:'고용보험심사위',  on:false },
-  { g:'위원회 결정문',  t:'iaciac', n:'산재재심사위',    on:false },
-  { g:'위원회 결정문',  t:'acr',    n:'국민권익위원회',  on:false },
-  { g:'위원회 결정문',  t:'fsc',    n:'금융위원회',      on:false },
-  { g:'위원회 결정문',  t:'kcc',    n:'방송통신위원회',  on:false },
-  { g:'위원회 결정문',  t:'nhrck',  n:'국가인권위원회',  on:false },
-  { g:'법령 · 규칙',    t:'admrul', n:'행정규칙·지침',   on:false },
-  { g:'법령 · 규칙',    t:'law',    n:'현행법령',        on:false },
+  { g:'판례 · 해석',   t:'prec',   n:'판례',           on:true  },
+  { g:'판례 · 해석',   t:'expc',   n:'법령해석례',     on:true  },
+  { g:'판례 · 해석',   t:'decc',   n:'행정심판례',     on:false },
+  { g:'판례 · 해석',   t:'detc',   n:'헌재결정례',     on:false },
+  { g:'위원회 결정문', t:'nlrc',   n:'노동위원회',     on:true  },
+  { g:'위원회 결정문', t:'ftc',    n:'공정거래위원회', on:true  },
+  { g:'위원회 결정문', t:'eiac',   n:'고용보험심사위', on:false },
+  { g:'위원회 결정문', t:'iaciac', n:'산재재심사위',   on:false },
+  { g:'위원회 결정문', t:'acr',    n:'국민권익위원회', on:false },
+  { g:'위원회 결정문', t:'fsc',    n:'금융위원회',     on:false },
+  { g:'위원회 결정문', t:'kcc',    n:'방송통신위원회', on:false },
+  { g:'위원회 결정문', t:'nhrck',  n:'국가인권위원회', on:false },
+  { g:'법령 · 규칙',   t:'admrul', n:'행정규칙·지침',  on:false },
+  { g:'법령 · 규칙',   t:'law',    n:'현행법령',       on:false },
 ];
 const NAME = Object.fromEntries(SCOPES.map(s => [s.t, s.n]));
+const MAX_WORDS = 4;
 
-/* ------------------------------------------------------------------
+/* ==================================================================
    유틸
------------------------------------------------------------------- */
+================================================================== */
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const stripTags = s => String(s)
-  .replace(/<br\s*\/?>/gi, '\n')
-  .replace(/<\/p>/gi, '\n')
-  .replace(/<[^>]+>/g, '')
-  .replace(/&nbsp;/g, ' ')
-  .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
-  .replace(/\n{3,}/g, '\n\n')
-  .trim();
+  .replace(/<br\s*\/?>/gi,'\n').replace(/<\/p>/gi,'\n').replace(/<[^>]+>/g,'')
+  .replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>')
+  .replace(/\n{3,}/g,'\n\n').trim();
 
 let terms = [];
-function setTerms(q){
-  terms = q.trim().split(/\s+/).filter(w => w.length > 1)
-           .map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-}
+const setTerms = words => terms = words.map(w => w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'));
+
 /** 이스케이프한 뒤 검색어에만 <mark>를 씌운다. 순서가 뒤바뀌면 XSS가 된다. */
 function hl(text){
   const safe = esc(text);
   if (!terms.length) return safe;
-  return safe.replace(new RegExp('(' + terms.join('|') + ')', 'gi'), '<mark class="hl">$1</mark>');
+  return safe.replace(new RegExp('('+terms.join('|')+')','gi'), '<mark class="hl">$1</mark>');
 }
 
-/* 키워드가 들어간 문장만 골라 발췌를 만든다 */
-function digest(text, max = 3){
-  const clean = stripTags(text).replace(/\s+/g, ' ').trim();
-  if (!terms.length || clean.length < 200) return '';
+/* 검색어가 들어간 문장만 골라 발췌 */
+function digest(text, max = 3, min = 140){
+  const clean = stripTags(text).replace(/\s+/g,' ').trim();
+  if (!terms.length || clean.length < min) return '';
   const re = new RegExp(terms.join('|'), 'i');
-  const hits = clean.split(/(?<=[.!?])\s+/)
-    .filter(s => s.length > 20 && re.test(s))
-    .slice(0, max);
-  return hits.length > 1 ? hits.join(' ') : '';
+  const hits = clean.split(/(?<=[.!?])\s+/).filter(s => s.length > 20 && re.test(s)).slice(0, max);
+  return hits.length ? hits.join(' ') : '';
 }
 
-/* ------------------------------------------------------------------
+/* ==================================================================
    법제처 응답 정규화
-   target 마다 필드 이름이 다르므로, 키 이름 패턴으로 집어낸다.
------------------------------------------------------------------- */
+   target 마다 키 이름이 다르므로 패턴으로 집어낸다.
+================================================================== */
 function findRows(data){
   let rows = null;
   (function walk(v){
@@ -286,59 +263,121 @@ function findRows(data){
       if (rows) return;
     }
   })(data);
+  // 결과가 1건이면 배열이 아니라 객체로 오는 경우가 있다.
+  if (!rows){
+    const one = [];
+    (function walk(v, depth){
+      if (one.length || !v || typeof v !== 'object' || depth > 3) return;
+      for (const val of Object.values(v)){
+        if (val && typeof val === 'object' && !Array.isArray(val)
+            && Object.keys(val).some(k => /일련번호/.test(k))){ one.push(val); return; }
+        if (val && typeof val === 'object') walk(val, depth + 1);
+      }
+    })(data, 0);
+    rows = one;
+  }
   return rows || [];
 }
-function findTotal(data){
-  let n = null;
-  (function walk(v){
-    if (n !== null || !v || typeof v !== 'object') return;
-    for (const [k, val] of Object.entries(v)){
-      if (/totalCnt/i.test(k)){ n = parseInt(val, 10); return; }
-      if (val && typeof val === 'object') walk(val);
-    }
-  })(data);
-  return Number.isFinite(n) ? n : null;
-}
 const pick = (row, re) => {
-  for (const [k, v] of Object.entries(row))
+  for (const [k,v] of Object.entries(row))
     if (re.test(k) && typeof v === 'string' && v.trim()) return v.trim();
   return '';
 };
 function normalize(row, target){
   return {
     target,
-    // 법제처 목록에는 행 번호인 소문자 id 가 섞여 있다. 일련번호를 반드시 먼저 본다.
+    // 목록에는 행 번호인 소문자 id 가 섞여 있다. 일련번호를 반드시 먼저 본다.
     id:    pick(row, /일련번호/) || pick(row, /법령ID|^MST$/) || pick(row, /^ID$/),
-    title: pick(row, /사건명|안건명|제목/) || pick(row, /법령명한글|행정규칙명|법령명/) || '제목 없음',
-    docno: pick(row, /사건번호|안건번호|문서번호|의안번호/),
-    date:  pick(row, /선고일자|결정일자|회신일자|의결일자|일자/),
-    org:   pick(row, /법원명|처리기관|회신기관|질의기관|위원회명|소관부처|기관명|담당부서/),
-    link:  pick(row, /상세링크/),
+    // 위원회 결정문은 제목이 '민원표시', 날짜가 '의결일' 이다.
+    title: pick(row, /사건명|안건명|민원표시|제목|의안명/)
+        || pick(row, /법령명한글|행정규칙명|법령명/) || '제목 없음',
+    docno: pick(row, /사건번호|안건번호|의안번호|문서번호/),
+    date:  pick(row, /선고일자|결정일자|회신일자|의결일자|공포일자|일자|^의결일$|^결정일$|^선고일$/),
+    org:   pick(row, /법원명|기관명|위원회명|처리기관|회신기관|질의기관|소관부처|담당부서/),
   };
 }
 
 /* 본문에서 보여줄 항목: 아는 것 먼저, 나머지는 뒤에 */
-const FIELD_ORDER = ['판시사항','판결요지','결정요지','재결요지','요지','질의요지','회답','이유','주문','조치내용','처분내용','판례내용','결정문내용','재결내용','내용','참조조문','참조판례'];
-const SKIP = /일련번호|링크|^ID$|번호$|일자|코드|구분코드|법령ID|MST/;
+const FIELD_ORDER = ['판시사항','판결요지','결정요지','재결요지','요지','질의요지','회답','주문','이유',
+                     '조치내용','처분내용','판례내용','결정문내용','재결내용','내용','참조조문','참조판례'];
+const GIST_KEY = /판시사항|판결요지|결정요지|재결요지|요지|회답/;
+const SKIP = /일련번호|링크|^ID$|번호$|일자|코드|법령ID|^MST$|^id$/;
 function detailFields(data){
   let obj = data;
-  while (obj && typeof obj === 'object' && !Object.values(obj).some(v => typeof v === 'string' && v.length > 30)){
+  while (obj && typeof obj === 'object'
+         && !Object.values(obj).some(v => typeof v === 'string' && v.length > 30)){
     const next = Object.values(obj).find(v => v && typeof v === 'object');
     if (!next) break;
     obj = next;
   }
-  const entries = Object.entries(obj || {}).filter(([k, v]) =>
-    typeof v === 'string' && stripTags(v).length > 12 && !SKIP.test(k));
-  entries.sort((a, b) => {
+  const entries = Object.entries(obj || {})
+    .filter(([k,v]) => typeof v === 'string' && stripTags(v).length > 12 && !SKIP.test(k));
+  entries.sort((a,b) => {
     const ia = FIELD_ORDER.indexOf(a[0]), ib = FIELD_ORDER.indexOf(b[0]);
     return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
   });
   return entries.slice(0, 8);
 }
 
-/* ------------------------------------------------------------------
-   화면
------------------------------------------------------------------- */
+/* ==================================================================
+   본문 조회 — 미리보기와 본문 열기가 같은 결과를 공유한다
+================================================================== */
+const detailCache = new Map();
+function loadDetail(it){
+  const key = it.target + ':' + it.id;
+  if (!detailCache.has(key)) detailCache.set(key, (async () => {
+    const r = await fetch('/api/law?target=' + it.target + '&id=' + encodeURIComponent(it.id));
+    const d = await r.json();
+    if (d && d.error) throw new Error(d.message || d.error);
+    return detailFields(d);
+  })());
+  return detailCache.get(key);
+}
+
+/* 미리보기 요약: 요지 필드가 있으면 그대로, 없으면 검색어 문장 발췌 */
+function summaryOf(fields){
+  const gistField = fields.find(([k]) => GIST_KEY.test(k));
+  let text = gistField ? gistField[1] : (fields.length ? fields[0][1] : '');
+  text = stripTags(text).replace(/\s+/g,' ').trim();
+  if (!gistField){
+    const d = digest(text, 2, 120);
+    if (d) text = d;
+  }
+  return text.length > 300 ? text.slice(0,300) + '…' : text;
+}
+
+/* 한 번에 3건씩만 미리보기를 불러온다 (법제처 트래픽 배려) */
+let active = 0; const queue = [];
+function enqueue(fn){ queue.push(fn); pump(); }
+function pump(){
+  while (active < 3 && queue.length){
+    active++;
+    queue.shift()().catch(()=>{}).then(() => { active--; pump(); });
+  }
+}
+const io = new IntersectionObserver(es => {
+  es.forEach(e => {
+    if (!e.isIntersecting) return;
+    io.unobserve(e.target);
+    enqueue(() => fillSnippet(e.target));
+  });
+}, { rootMargin: '300px' });
+
+async function fillSnippet(card){
+  const sn = card.querySelector('.snippet');
+  try {
+    const fields = await loadDetail(card._item);
+    const text = summaryOf(fields);
+    if (text){ sn.innerHTML = hl(text); sn.classList.remove('pending'); }
+    else sn.textContent = '이 자료는 요약을 제공하지 않습니다.';
+  } catch (e){
+    sn.textContent = '요약을 불러오지 못했습니다.';
+  }
+}
+
+/* ==================================================================
+   검색
+================================================================== */
 function buildScopes(){
   const box = $('#scopes');
   let cur = '';
@@ -351,46 +390,73 @@ function buildScopes(){
       box.appendChild(h);
     }
     const l = document.createElement('label');
-    l.className = 'opt';
-    l.dataset.t = s.t;
-    l.innerHTML = '<input type="checkbox" value="' + s.t + '"' + (s.on ? ' checked' : '') +
-                  '>' + esc(s.n) + '<span class="count"></span>';
+    l.className = 'opt'; l.dataset.t = s.t;
+    l.innerHTML = '<input type="checkbox" value="'+s.t+'"'+(s.on?' checked':'')+'>'
+                + esc(s.n) + '<span class="count"></span>';
     box.lastElementChild.appendChild(l);
   });
 }
 const selected = () => [...document.querySelectorAll('#scopes input:checked')].map(i => i.value);
-
-function status(html){ $('#status').innerHTML = html; }
+const status = html => $('#status').innerHTML = html;
 function setCount(t, n){
-  const l = document.querySelector('#scopes .opt[data-t="' + t + '"]');
+  const l = document.querySelector('#scopes .opt[data-t="'+t+'"]');
   if (!l) return;
   l.querySelector('.count').textContent = n === null ? '' : n;
   l.classList.toggle('on', !!n);
 }
 
+async function fetchList(target, word, many){
+  const r = await fetch('/api/law?target='+target+'&display='+(many?100:20)
+                      + '&query='+encodeURIComponent(word));
+  const d = await r.json();
+  if (d && d.error) throw new Error(d.message || d.error);
+  return findRows(d).map(row => normalize(row, target)).filter(i => i.id);
+}
+
+/* 법제처 query 는 AND/OR 연산자를 지원하지 않는다.
+   그래서 단어마다 따로 검색한 뒤 교집합(모두 포함) 또는 합집합(하나라도)을 낸다. */
+async function searchTarget(target, words, mode){
+  const many = words.length > 1;
+  const sets = await Promise.all(words.map(w => fetchList(target, w, many)));
+  if (sets.length === 1) return sets[0];
+
+  const seen = new Map();
+  sets.forEach((list, i) => list.forEach(it => {
+    if (!seen.has(it.id)) seen.set(it.id, { it, hits:new Set() });
+    seen.get(it.id).hits.add(i);
+  }));
+
+  const out = [];
+  seen.forEach(({ it, hits }) => {
+    if (mode === 'and' && hits.size < sets.length) return;
+    it.hits = hits.size;
+    out.push(it);
+  });
+  return out;
+}
+
 async function search(){
-  const q = $('#q').value.trim();
-  if (!q) return;
+  const raw = $('#q').value.trim();
+  if (!raw) return;
+  const words = raw.split(/\s+/).filter(Boolean).slice(0, MAX_WORDS);
+  const mode = document.querySelector('input[name="mode"]:checked').value;
   const targets = selected();
   if (!targets.length){
     status('<span class="sub">왼쪽에서 검색 대상을 하나 이상 선택하세요.</span>');
     return;
   }
-  setTerms(q);
+
+  setTerms(words);
+  detailCache.clear();
   targets.forEach(t => setCount(t, null));
   status('<span class="sub">찾는 중…</span>');
-  $('#list').innerHTML = '<div class="loading">' + targets.length + '개 자료원에 요청하고 있습니다.</div>';
+  $('#list').innerHTML = '<div class="loading">'
+    + (words.length > 1 ? words.length + '개 단어 × ' : '')
+    + targets.length + '개 자료원에 요청하고 있습니다.</div>';
 
   const results = await Promise.all(targets.map(async t => {
-    try {
-      const r = await fetch('/api/law?target=' + t + '&display=20&query=' + encodeURIComponent(q));
-      const d = await r.json();
-      if (d && d.error) return { t, err: d.message || d.error, items: [] };
-      const items = findRows(d).map(row => normalize(row, t)).filter(i => i.id);
-      return { t, items, total: findTotal(d) };
-    } catch (e){
-      return { t, err: '응답을 읽지 못했습니다.', items: [] };
-    }
+    try { return { t, items: await searchTarget(t, words, mode) }; }
+    catch (e){ return { t, items: [], err: e.message || '요청 실패' }; }
   }));
 
   let all = [], errs = [];
@@ -400,89 +466,105 @@ async function search(){
     all = all.concat(r.items);
   });
 
-  // 최신 순
-  all.sort((a, b) => (b.date || '').replace(/\D/g, '').localeCompare((a.date || '').replace(/\D/g, '')));
+  // 일치한 단어 수 → 최신순
+  all.sort((a,b) =>
+    (b.hits||0) - (a.hits||0) ||
+    (b.date||'').replace(/\D/g,'').localeCompare((a.date||'').replace(/\D/g,'')));
 
   if (!all.length){
-    $('#list').innerHTML = '<div class="empty"><p class="big">결과가 없습니다.</p><p>' +
-      (errs.length ? esc(errs.join(' / ')) : '검색어를 줄이거나 대상을 넓혀 보세요.') + '</p></div>';
-    status('<strong>' + esc(q) + '</strong><span class="sub">0건</span>');
+    const why = words.length > 1 && mode === 'and'
+      ? '모든 단어가 함께 나오는 자료가 없습니다. ‘하나라도 포함’으로 바꿔 보세요.'
+      : '검색어를 줄이거나 대상을 넓혀 보세요.';
+    $('#list').innerHTML = '<div class="empty"><p class="big">결과가 없습니다.</p><p>'
+      + (errs.length ? esc(errs.join(' / ')) : why) + '</p></div>';
+    status('<strong>' + esc(raw) + '</strong><span class="sub">0건</span>');
     return;
   }
 
-  status('<strong>' + esc(q) + '</strong><span class="n">' + all.length + '건</span>' +
-         '<span class="sub">' + results.filter(r => r.items.length).map(r => NAME[r.t]).join(' · ') + '</span>' +
-         (errs.length ? '<span class="sub">· ' + esc(errs.join(' / ')) + '</span>' : ''));
+  const modeLabel = words.length > 1
+    ? (mode === 'and' ? ' · 모든 단어 포함' : ' · 한 단어 이상 포함') : '';
+  status('<strong>' + esc(raw) + '</strong><span class="n">' + all.length + '건</span>'
+       + '<span class="sub">' + results.filter(r => r.items.length).map(r => NAME[r.t]).join(' · ')
+       + esc(modeLabel) + '</span>'
+       + (errs.length ? '<span class="sub">· ' + esc(errs.join(' / ')) + '</span>' : ''));
 
-  $('#list').innerHTML = '';
-  all.forEach((it, i) => $('#list').appendChild(card(it, i)));
+  const list = $('#list');
+  list.innerHTML = '';
+  all.forEach((it,i) => list.appendChild(card(it, i, words.length)));
 }
 
-function card(it, i){
+/* ==================================================================
+   카드
+================================================================== */
+function card(it, i, wordCount){
   const el = document.createElement('article');
   el.className = 'card cards-in';
-  el.style.animationDelay = Math.min(i, 12) * 18 + 'ms';
+  el.style.animationDelay = Math.min(i,12) * 18 + 'ms';
+  el._item = it;
 
   const bits = [it.org, it.docno, it.date].filter(Boolean)
-    .map(x => '<span class="mono">' + esc(x) + '</span>').join('<span class="dot">·</span>');
+    .map(x => '<span class="mono">'+esc(x)+'</span>').join('<span class="dot">·</span>');
+  const hitBadge = (wordCount > 1 && it.hits)
+    ? '<span class="badge hits">단어 '+it.hits+'/'+wordCount+'</span>' : '';
 
   el.innerHTML =
-    '<button class="hdr" type="button" aria-expanded="false">' +
-      '<span class="chev">본문 열기</span>' +
-      '<div class="meta"><span class="badge">' + esc(NAME[it.target] || it.target) + '</span>' + bits + '</div>' +
-      '<h3>' + hl(it.title) + '</h3>' +
-    '</button>' +
-    '<div class="body"></div>';
+    '<div class="hdr" role="button" tabindex="0" aria-expanded="false">'
+    + '<span class="chev">본문 열기</span>'
+    + '<div class="meta"><span class="badge">'+esc(NAME[it.target]||it.target)+'</span>'+hitBadge+bits+'</div>'
+    + '<h3>'+hl(it.title)+'</h3>'
+    + '<span class="snippet pending">요약 불러오는 중…</span>'
+    + '</div><div class="body"></div>';
 
   const hdr = el.querySelector('.hdr');
-  hdr.addEventListener('click', () => toggle(el, it, hdr));
+  hdr.addEventListener('click', () => toggle(el, hdr));
+  hdr.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggle(el, hdr); }
+  });
+  io.observe(el);
   return el;
 }
 
-async function toggle(el, it, hdr){
+async function toggle(el, hdr){
   const open = el.classList.toggle('open');
   hdr.setAttribute('aria-expanded', String(open));
   hdr.querySelector('.chev').textContent = open ? '접기' : '본문 열기';
   if (!open || el.dataset.loaded) return;
 
-  const body = el.querySelector('.body');
+  const it = el._item, body = el.querySelector('.body');
   body.innerHTML = '<div class="loading">본문을 가져오는 중…</div>';
   try {
-    const r = await fetch('/api/law?target=' + it.target + '&id=' + encodeURIComponent(it.id));
-    const d = await r.json();
-    if (d && d.error) throw new Error(d.message || d.error);
-
-    const fields = detailFields(d);
+    const fields = await loadDetail(it);
     if (!fields.length){
       body.innerHTML = '<div class="err">이 자료는 본문을 제공하지 않습니다. 아래 원문 링크에서 확인하세요.</div>';
     } else {
-      // 요지 필드가 따로 없는 자료(위원회 결정문 등)에는 키워드 문장 발췌를 얹는다.
-      const hasGist = fields.some(([k]) => /요지|판시사항|회답|주문/.test(k));
-      const gist = hasGist ? '' : digest(fields.map(([, v]) => v).join(' '));
-      body.innerHTML = (gist
-        ? '<div class="field gist"><h4>키워드 발췌</h4><p>' + hl(gist) + '</p></div>' : '')
-        + fields.map(([k, v]) => {
-        const paras = stripTags(v).split(/\n+/).filter(Boolean)
-          .map(p => '<p>' + hl(p) + '</p>').join('');
-        return '<div class="field"><h4>' + esc(k) + '</h4>' + paras + '</div>';
-      }).join('');
+      const hasGist = fields.some(([k]) => GIST_KEY.test(k));
+      const gist = hasGist ? '' : digest(fields.map(([,v]) => v).join(' '));
+      body.innerHTML =
+        (gist ? '<div class="field"><h4>키워드 발췌</h4><p>'+hl(gist)+'</p></div>' : '')
+        + fields.map(([k,v]) => {
+            const paras = stripTags(v).split(/\n+/).filter(Boolean)
+              .map(p => '<p>'+hl(p)+'</p>').join('');
+            return '<div class="field"><h4>'+esc(k)+'</h4>'+paras+'</div>';
+          }).join('');
     }
     body.insertAdjacentHTML('beforeend', originLink(it));
     el.dataset.loaded = '1';
   } catch (e){
-    body.innerHTML = '<div class="err">' + esc(e.message || '본문을 가져오지 못했습니다.') + '</div>' + originLink(it);
+    body.innerHTML = '<div class="err">'+esc(e.message || '본문을 가져오지 못했습니다.')+'</div>'
+                   + originLink(it);
   }
 }
-/* 법제처가 돌려주는 상세링크에는 OC 인증키가 박혀 있다. 그대로 쓰면 키가 새므로
-   원문도 프록시를 거쳐 연다. */
+
+/* 법제처가 주는 상세링크에는 OC 인증키가 박혀 있다. 원문도 프록시를 거쳐 연다. */
 function originLink(it){
-  const href = '/api/law?format=html&target=' + it.target + '&id=' + encodeURIComponent(it.id);
-  return '<div class="origin">원문 · <a href="' + esc(href) + '" target="_blank" rel="noopener">국가법령정보센터 원문 보기</a></div>';
+  const href = '/api/law?format=html&target='+it.target+'&id='+encodeURIComponent(it.id);
+  return '<div class="origin">원문 · <a href="'+esc(href)+'" target="_blank" rel="noopener">'
+       + '국가법령정보센터 원문 보기</a></div>';
 }
 
-/* ------------------------------------------------------------------
+/* ==================================================================
    이벤트
------------------------------------------------------------------- */
+================================================================== */
 buildScopes();
 $('#go').addEventListener('click', search);
 $('#q').addEventListener('keydown', e => { if (e.key === 'Enter') search(); });
@@ -490,11 +572,7 @@ document.querySelectorAll('[data-all]').forEach(b => b.addEventListener('click',
   const on = b.dataset.all === '1';
   document.querySelectorAll('#scopes input').forEach(i => i.checked = on);
 }));
-document.querySelectorAll('input[name="mk"]').forEach(r => r.addEventListener('change', () => {
-  document.body.dataset.mark = r.value;
-}));
 
-// ?q=키워드 로 들어오면 바로 검색
 const pre = new URLSearchParams(location.search).get('q');
 if (pre){ $('#q').value = pre; search(); }
 </script>
