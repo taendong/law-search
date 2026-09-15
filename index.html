@@ -103,6 +103,11 @@ body{
 .card h3{font-family:var(--serif);font-size:17.5px;font-weight:700;line-height:1.45;margin:0;color:var(--ink)}
 .chev{float:right;color:var(--muted);font-size:12px;margin-left:12px}
 
+.tags{display:inline-flex;gap:4px;flex-wrap:wrap}
+.tag{font-family:var(--mono);font-size:11px;padding:1px 7px;border-radius:2px;white-space:nowrap}
+.tag.yes{background:#FFF7DA;color:#6B4E00;border:1px solid #E3C766}
+.tag.no{background:#F4F5F7;color:#9AA4AD;border:1px solid var(--rule);text-decoration:line-through}
+.card.filtered{display:none}
 .snippet{
   display:block;font-family:var(--serif);font-size:14.5px;line-height:1.85;
   color:var(--ink-2);margin-top:9px;word-break:keep-all;
@@ -176,6 +181,11 @@ mark.hl{
       <button class="linkbtn" data-all="1" type="button">전체 선택</button>
       <button class="linkbtn" data-all="0" type="button">전체 해제</button>
     </div>
+
+    <h2 style="margin-top:26px">정확도</h2>
+    <label class="opt"><input type="checkbox" id="verify">본문 대조로 걸러내기</label>
+    <p style="font-size:12px;color:var(--muted);margin:4px 6px 0;line-height:1.6">
+      본문에 단어가 실제로 있는 자료만 남깁니다. 정확한 대신 느립니다.</p>
   </aside>
 
   <main>
@@ -230,8 +240,21 @@ const stripTags = s => String(s)
   .replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>')
   .replace(/\n{3,}/g,'\n\n').trim();
 
-let terms = [];
-const setTerms = words => terms = words.map(w => w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'));
+let terms = [];   // 정규식용 (이스케이프됨)
+let words = [];   // 원본 — 본문 대조와 태그 표시에 쓴다
+function setTerms(list){
+  words = list;
+  // '특수건강진단' 이 본문에 '특수 건강진단' 으로 적혀 있어도 강조되도록
+  // 글자 사이에 공백을 허용한다. 대조 규칙(squash)과 기준을 맞춘 것이다.
+  terms = list.map(w => [...w.replace(/\s+/g,'')]
+    .map(c => c.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('\\s*'));
+}
+/* 법제처 본문은 '특수 건강진단'처럼 띄어쓰기가 다를 수 있다. 공백을 지우고 대조한다. */
+const squash = s => String(s).replace(/\s+/g,'');
+const verifyWords = fullText => {
+  const hay = squash(stripTags(fullText));
+  return words.map(w => hay.includes(squash(w)));
+};
 
 /** 이스케이프한 뒤 검색어에만 <mark>를 씌운다. 순서가 뒤바뀌면 XSS가 된다. */
 function hl(text){
@@ -334,16 +357,33 @@ function loadDetail(it){
   return detailCache.get(key);
 }
 
-/* 미리보기 요약: 요지 필드가 있으면 그대로, 없으면 검색어 문장 발췌 */
+/* 미리보기 요약.
+   검색어가 실제로 나온 문장을 우선 보여준다. 요지 앞부분만 잘라 보여주면
+   왜 이 자료가 검색됐는지 알 수 없다. */
 function summaryOf(fields){
+  const full = fields.map(([,v]) => v).join('\n');
+  const best = bestSentences(full, 2);
+  if (best) return clip(best);
+
   const gistField = fields.find(([k]) => GIST_KEY.test(k));
-  let text = gistField ? gistField[1] : (fields.length ? fields[0][1] : '');
-  text = stripTags(text).replace(/\s+/g,' ').trim();
-  if (!gistField){
-    const d = digest(text, 2, 120);
-    if (d) text = d;
-  }
-  return text.length > 300 ? text.slice(0,300) + '…' : text;
+  const text = stripTags(gistField ? gistField[1] : (fields.length ? fields[0][1] : ''))
+                 .replace(/\s+/g,' ').trim();
+  return clip(text);
+}
+const clip = t => t.length > 300 ? t.slice(0,300) + '…' : t;
+
+/* 검색어를 가장 많이 담은 문장을 원래 순서대로 고른다 */
+function bestSentences(text, max = 2){
+  if (!words.length) return '';
+  const clean = stripTags(text).replace(/\s+/g,' ').trim();
+  const sents = clean.split(/(?<=[.!?])\s+/).filter(s => s.length > 15);
+  const scored = sents.map((s,i) => {
+    const hay = squash(s);
+    return { s, i, score: words.filter(w => hay.includes(squash(w))).length };
+  }).filter(x => x.score > 0);
+  if (!scored.length) return '';
+  scored.sort((a,b) => b.score - a.score || a.i - b.i);
+  return scored.slice(0,max).sort((a,b) => a.i - b.i).map(x => x.s).join(' ');
 }
 
 /* 한 번에 3건씩만 미리보기를 불러온다 (법제처 트래픽 배려) */
@@ -367,12 +407,36 @@ async function fillSnippet(card){
   const sn = card.querySelector('.snippet');
   try {
     const fields = await loadDetail(card._item);
+
+    // 본문에 단어가 실제로 있는지 대조한다 (법제처 매칭이 느슨할 수 있다)
+    const found = verifyWords(fields.map(([,v]) => v).join('\n'));
+    card._found = found;
+    if (words.length > 1){
+      card.querySelector('.tags').innerHTML = words.map((w,i) =>
+        '<span class="tag '+(found[i] ? 'yes' : 'no')+'">'+esc(w)+'</span>').join('');
+    }
+    if (filterOn() && !found.every(Boolean)) card.classList.add('filtered');
+
     const text = summaryOf(fields);
     if (text){ sn.innerHTML = hl(text); sn.classList.remove('pending'); }
     else sn.textContent = '이 자료는 요약을 제공하지 않습니다.';
   } catch (e){
     sn.textContent = '요약을 불러오지 못했습니다.';
+  } finally {
+    if (filterOn()) tallyFiltered();
   }
+}
+const filterOn = () => $('#verify').checked;
+
+function tallyFiltered(){
+  const cards = [...document.querySelectorAll('#list .card')];
+  const done = cards.filter(c => c._found).length;
+  const kept = cards.filter(c => !c.classList.contains('filtered')).length;
+  const box = $('#tally');
+  if (!box) return;
+  box.textContent = done < cards.length
+    ? '본문 대조 중 ' + done + '/' + cards.length
+    : '본문 확인 ' + kept + '건';
 }
 
 /* ==================================================================
@@ -415,9 +479,9 @@ async function fetchList(target, word, many){
 
 /* 법제처 query 는 AND/OR 연산자를 지원하지 않는다.
    그래서 단어마다 따로 검색한 뒤 교집합(모두 포함) 또는 합집합(하나라도)을 낸다. */
-async function searchTarget(target, words, mode){
-  const many = words.length > 1;
-  const sets = await Promise.all(words.map(w => fetchList(target, w, many)));
+async function searchTarget(target, list, mode){
+  const many = list.length > 1;
+  const sets = await Promise.all(list.map(w => fetchList(target, w, many)));
   if (sets.length === 1) return sets[0];
 
   const seen = new Map();
@@ -438,7 +502,7 @@ async function searchTarget(target, words, mode){
 async function search(){
   const raw = $('#q').value.trim();
   if (!raw) return;
-  const words = raw.split(/\s+/).filter(Boolean).slice(0, MAX_WORDS);
+  const ws = raw.split(/\s+/).filter(Boolean).slice(0, MAX_WORDS);
   const mode = document.querySelector('input[name="mode"]:checked').value;
   const targets = selected();
   if (!targets.length){
@@ -446,16 +510,16 @@ async function search(){
     return;
   }
 
-  setTerms(words);
+  setTerms(ws);
   detailCache.clear();
   targets.forEach(t => setCount(t, null));
   status('<span class="sub">찾는 중…</span>');
   $('#list').innerHTML = '<div class="loading">'
-    + (words.length > 1 ? words.length + '개 단어 × ' : '')
+    + (ws.length > 1 ? ws.length + '개 단어 × ' : '')
     + targets.length + '개 자료원에 요청하고 있습니다.</div>';
 
   const results = await Promise.all(targets.map(async t => {
-    try { return { t, items: await searchTarget(t, words, mode) }; }
+    try { return { t, items: await searchTarget(t, ws, mode) }; }
     catch (e){ return { t, items: [], err: e.message || '요청 실패' }; }
   }));
 
@@ -472,7 +536,7 @@ async function search(){
     (b.date||'').replace(/\D/g,'').localeCompare((a.date||'').replace(/\D/g,'')));
 
   if (!all.length){
-    const why = words.length > 1 && mode === 'and'
+    const why = ws.length > 1 && mode === 'and'
       ? '모든 단어가 함께 나오는 자료가 없습니다. ‘하나라도 포함’으로 바꿔 보세요.'
       : '검색어를 줄이거나 대상을 넓혀 보세요.';
     $('#list').innerHTML = '<div class="empty"><p class="big">결과가 없습니다.</p><p>'
@@ -481,16 +545,26 @@ async function search(){
     return;
   }
 
-  const modeLabel = words.length > 1
+  const modeLabel = ws.length > 1
     ? (mode === 'and' ? ' · 모든 단어 포함' : ' · 한 단어 이상 포함') : '';
   status('<strong>' + esc(raw) + '</strong><span class="n">' + all.length + '건</span>'
        + '<span class="sub">' + results.filter(r => r.items.length).map(r => NAME[r.t]).join(' · ')
        + esc(modeLabel) + '</span>'
-       + (errs.length ? '<span class="sub">· ' + esc(errs.join(' / ')) + '</span>' : ''));
+       + (errs.length ? '<span class="sub">· ' + esc(errs.join(' / ')) + '</span>' : '')
+       + '<span class="sub" id="tally"></span>');
 
   const list = $('#list');
   list.innerHTML = '';
-  all.forEach((it,i) => list.appendChild(card(it, i, words.length)));
+  const cards = all.map((it,i) => card(it, i, ws.length));
+  cards.forEach(c => list.appendChild(c));
+
+  if (filterOn()){
+    // 걸러내려면 보이지 않는 카드까지 전부 대조해야 한다.
+    cards.forEach(c => enqueue(() => fillSnippet(c)));
+    tallyFiltered();
+  } else {
+    cards.forEach(c => io.observe(c));
+  }
 }
 
 /* ==================================================================
@@ -504,13 +578,12 @@ function card(it, i, wordCount){
 
   const bits = [it.org, it.docno, it.date].filter(Boolean)
     .map(x => '<span class="mono">'+esc(x)+'</span>').join('<span class="dot">·</span>');
-  const hitBadge = (wordCount > 1 && it.hits)
-    ? '<span class="badge hits">단어 '+it.hits+'/'+wordCount+'</span>' : '';
+  const tags = wordCount > 1 ? '<span class="tags"></span>' : '';
 
   el.innerHTML =
     '<div class="hdr" role="button" tabindex="0" aria-expanded="false">'
     + '<span class="chev">본문 열기</span>'
-    + '<div class="meta"><span class="badge">'+esc(NAME[it.target]||it.target)+'</span>'+hitBadge+bits+'</div>'
+    + '<div class="meta"><span class="badge">'+esc(NAME[it.target]||it.target)+'</span>'+tags+bits+'</div>'
     + '<h3>'+hl(it.title)+'</h3>'
     + '<span class="snippet pending">요약 불러오는 중…</span>'
     + '</div><div class="body"></div>';
@@ -520,7 +593,6 @@ function card(it, i, wordCount){
   hdr.addEventListener('keydown', e => {
     if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggle(el, hdr); }
   });
-  io.observe(el);
   return el;
 }
 
@@ -572,6 +644,8 @@ document.querySelectorAll('[data-all]').forEach(b => b.addEventListener('click',
   const on = b.dataset.all === '1';
   document.querySelectorAll('#scopes input').forEach(i => i.checked = on);
 }));
+
+$('#verify').addEventListener('change', () => { if ($('#q').value.trim()) search(); });
 
 const pre = new URLSearchParams(location.search).get('q');
 if (pre){ $('#q').value = pre; search(); }
